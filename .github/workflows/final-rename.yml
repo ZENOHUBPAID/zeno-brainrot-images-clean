@@ -1,0 +1,56 @@
+name: FINAL RENAME BRAINROT
+on: workflow_dispatch
+permissions:
+  contents: write
+jobs:
+  rename:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Rename with correct names
+        run: |
+          cat > rename_auto.py << 'PY'
+          import os, glob, shutil
+          
+          # TA VRAIE LISTE DE 61 NOMS BRAINROT DANS LE BON ORDRE
+          NAMES = [
+            "1x1x1", "67", "Ballerina-Cappuccina", "Ballerino-Lololo",
+            "Bambini-Crostini", "Bandito-Bobritto", "Bisonte-Giuppitere",
+            "Bombardini-Gusini", "Bombombini-Gusini", "Ballerina-Lololo",
+            "Boneca-Ambalabu", "Brr-Brr-Patapim", "Burbaloni-Luliloli",
+            "Cappuccino-Assassino", "Chillin-Chili", "Chimpanzini-Bananini",
+            "Cocofanto-Elefanto", "Espressona-Signora", "Frigo-Camelo",
+            "Garama-and-Madundung", "Glorbo-Fruttodrillo", "Il-Cacto-Hipopotamo",
+            "La-Vaca-Saturno-Saturnita", "Lirili-Larila", "Lirili-Larila-2",
+            "Los-Bombinitos", "Los-Tralaleritos", "Madundung", "Matteo",
+            "No-My-Hotspot", "Odin-Din-Din-Dun", "Orangutini-Ananasini",
+            "Perochello-Lemonchello", "Piccione-Macchina", "Pippi-Kiwi",
+            "Pot-Hotspot", "Sammyni-Spiderini", "Spioniro-Golubiro",
+            "Svinino-Bombondino", "Tartaruga-Canguro", "Tim-Cheese",
+            "Tralalero-Tralala", "Tralalita-Tralala", "Trippi-Troppi",
+            "Tung-Tung-Tung-Sahur", "Udin-Din-Din-Dun", "Zibra-Zubra-Zibralini"
+          ]
+          
+          files = sorted(glob.glob("IMG_*.jpg") + glob.glob("IMG_*.JPG") + glob.glob("IMG_*.jpeg"))
+          print(f"Found {len(files)} images")
+          
+          # On renomme proprement
+          for i, f in enumerate(files):
+              if i < len(NAMES):
+                  new_name = f"{NAMES[i]}.png"
+                  print(f"{f} -> {new_name}")
+                  shutil.move(f, new_name)
+          
+          # Cleanup anciens mauvais fichiers si présents
+          for bad in ["1x1x1.png","67.png"]:
+              if os.path.exists(bad) and bad not in [f"{n}.png" for n in NAMES]:
+                  pass
+          PY
+          python rename_auto.py
+      - name: Commit
+        run: |
+          git config user.name "ZENO"
+          git config user.email "zeno@bot.com"
+          git add -A
+          git commit -m "final rename - 40 brainrots" || echo "no change"
+          git push
